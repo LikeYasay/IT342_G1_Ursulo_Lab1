@@ -26,9 +26,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> {}) // ✅ enable CORS (uses CorsConfigurationSource bean)
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // ✅ allow preflight
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/user/me").authenticated()
                         .anyRequest().permitAll()
@@ -37,4 +39,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }
